@@ -1,0 +1,8 @@
+syntax: glob
+*.pyc
+.*.swp
+.coverage
+README
+build
+dist
+apibee.egg-info/
