@@ -38,7 +38,7 @@ import codecs
 
 setup(
     name = 'apibee',
-    version = '0.1', # TODO don't forget to change version
+    version = '0.2', # TODO don't forget to change version
 
     description = 'A dynamic api client',
     long_description = codecs.open('README.rst', "r", "utf-8").read(),

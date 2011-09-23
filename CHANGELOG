@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v0.2
+----
+
+ * add possibility to make a call request from the client
+
 v0.1
 ----
 
