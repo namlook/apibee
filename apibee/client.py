@@ -52,6 +52,11 @@ class Client(RestkitResource):
         self._last_result = resp.body_string()
         return self.process_result(self._last_result)
 
+    def __call__(self, **query):
+        query.update(self._query)
+        url, query = self.build_request('/', query)
+        return self.get(url, **query)
+
     def build_request(self, resource, query):
         """
         add custom effect to the resouce url and the query params before building the request
