@@ -39,6 +39,8 @@ class Client(RestkitResource):
         self._query = []
         self._last_result = None
         self._last_response = None
+        self._base_url = None
+        self._final_query = None
 
     def __getattr__(self, key):
         return Resource(self, [key])
@@ -54,8 +56,24 @@ class Client(RestkitResource):
 
     def __call__(self, **query):
         query.update(self._query)
-        url, query = self.build_request('/', query)
-        return self.get(url, **query)
+        self._base_url, self._final_query = self.build_request('/', query)
+        return self
+
+    def get(self):
+        return super(Client, self).get(self._base_url, params_dict=self._final_query)
+
+    def head(self):
+        return super(Client, self).head(self._base_url, params_dict=self._final_query)
+
+    def delete(self):
+        return super(Client, self).delete(self._base_url, params_dict=self._final_query)
+
+    def post(self, **payload):
+        return super(Client, self).post(self._base_url, payload=payload)
+
+    def put(self, **payload):
+        return super(Client, self).put(self._base_url, payload=payload)
+
 
     def build_request(self, resource, query):
         """
@@ -72,6 +90,7 @@ class Client(RestkitResource):
         return result
 
 class Resource(dict):
+
     def __init__(self, client, resources_list):
         self._client = client
         self._resources = resources_list
@@ -84,14 +103,13 @@ class Resource(dict):
 
     def __call__(self, **query):
         url = self._get_resource_url()
-        query = self._get_query(**query)
-        url, query = self._client.build_request(url, query)
-        return self._client.get(url, **query)
+        query.update(self._client._query)
+        self._client._base_url, self._client._final_query = self._client.build_request(url, query)
+        return self._client
 
     def _get_resource_url(self):
         return "/"+"/".join(self._resources)
-    
+
     def _get_query(self, **query):
-        query.update(self._client._query)
         return query
 
